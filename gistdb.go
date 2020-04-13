@@ -8,23 +8,25 @@ import (
 	"golang.org/x/oauth2"
 )
 
-type GistDBConnection struct {
+//Connection is the handle for all access to the Gists
+type Connection struct {
 	ctx       context.Context
 	client    *github.Client
 	gistID    string
 	gistFiles map[github.GistFilename]github.GistFile
 }
 
-func isGistIdinGistList(searchId string, gistlist []*github.Gist) bool {
+func isGistIdinGistList(searchID string, gistlist []*github.Gist) bool {
 	for _, v := range gistlist {
-		if *(v.ID) == searchId {
+		if *(v.ID) == searchID {
 			return true
 		}
 	}
 	return false
 }
 
-func NewConnection(pat string, gistid string) (*GistDBConnection, error) {
+//NewConnection creates a new Connection to the listed gist, returning error if the id cannot be found
+func NewConnection(pat string, gistid string) (*Connection, error) {
 	ctx := context.Background()
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: pat},
@@ -36,7 +38,7 @@ func NewConnection(pat string, gistid string) (*GistDBConnection, error) {
 	gists, err := getUserGists(ctx, client)
 	if err != nil {
 		fmt.Printf("Error retrieving Gists: %s", err)
-		return nil, fmt.Errorf("Could not connect to Gist %s. Err: %s", gistid, err)
+		return nil, fmt.Errorf("Could not connect to Github. Err: %s", err)
 	}
 	if !isGistIdinGistList(gistid, gists) {
 		return nil, fmt.Errorf("Gist of id %s not found for this user. Check details and try again", gistid)
@@ -45,11 +47,11 @@ func NewConnection(pat string, gistid string) (*GistDBConnection, error) {
 	gist, _, err := client.Gists.Get(ctx, gistid)
 	if err != nil {
 		fmt.Printf("Error retrieving Gist %s. Err: %s", gistid, err)
-		return nil, fmt.Errorf("Gist if id %s not retreivable. Check details and try again", gistid)
+		return nil, fmt.Errorf("Gist of id %s not retreivable. Check details and try again", gistid)
 	}
 	files := gist.Files
 
-	return &GistDBConnection{ctx, client, gistid, files}, nil
+	return &Connection{ctx, client, gistid, files}, nil
 }
 
 func getUserGists(ctx context.Context, client *github.Client) ([]*github.Gist, error) {
