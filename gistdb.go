@@ -16,15 +16,6 @@ type Connection struct {
 	gistFiles map[github.GistFilename]github.GistFile
 }
 
-func isGistIdinGistList(searchID string, gistlist []*github.Gist) bool {
-	for _, v := range gistlist {
-		if *(v.ID) == searchID {
-			return true
-		}
-	}
-	return false
-}
-
 //NewConnection creates a new Connection to the listed gist, returning error if the id cannot be found
 func NewConnection(pat string, gistid string) (*Connection, error) {
 	ctx := context.Background()
@@ -52,9 +43,4 @@ func NewConnection(pat string, gistid string) (*Connection, error) {
 	files := gist.Files
 
 	return &Connection{ctx, client, gistid, files}, nil
-}
-
-func getUserGists(ctx context.Context, client *github.Client) ([]*github.Gist, error) {
-	gists, _, err := client.Gists.List(ctx, "", nil)
-	return gists, err
 }
