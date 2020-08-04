@@ -2,7 +2,6 @@ package gistdb
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/google/go-github/github"
 	"golang.org/x/oauth2"
@@ -26,21 +25,14 @@ func NewConnection(pat string, gistid string) (*Connection, error) {
 
 	client := github.NewClient(tc)
 
-	gists, err := getUserGists(ctx, client)
+	conn := Connection{ctx: ctx,
+		client: client,
+		gistID: gistid}
+
+	err := conn.loadGistFiles()
 	if err != nil {
-		fmt.Printf("Error retrieving Gists: %s", err)
-		return nil, fmt.Errorf("Could not connect to Github. Err: %s", err)
-	}
-	if !isGistIdinGistList(gistid, gists) {
-		return nil, fmt.Errorf("Gist of id %s not found for this user. Check details and try again", gistid)
+		return nil, err
 	}
 
-	gist, _, err := client.Gists.Get(ctx, gistid)
-	if err != nil {
-		fmt.Printf("Error retrieving Gist %s. Err: %s", gistid, err)
-		return nil, fmt.Errorf("Gist of id %s not retreivable. Check details and try again", gistid)
-	}
-	files := gist.Files
-
-	return &Connection{ctx, client, gistid, files}, nil
+	return &conn, nil
 }
