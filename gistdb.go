@@ -9,10 +9,10 @@ import (
 
 //Connection is the handle for all access to the Gists
 type Connection struct {
-	ctx       context.Context
-	client    *github.Client
-	gistID    string
-	gistFiles map[github.GistFilename]github.GistFile
+	ctx    context.Context
+	client *github.Client
+	gistID string
+	gist   github.Gist
 }
 
 //NewConnection creates a new Connection to the listed gist, returning error if the id cannot be found

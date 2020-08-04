@@ -25,6 +25,6 @@ func (c *Connection) loadGistFiles() error {
 		fmt.Printf("Error retrieving Gist %s. Err: %s", c.gistID, err)
 		return fmt.Errorf("Gist of id %s not retreivable. Check details and try again", c.gistID)
 	}
-	c.gistFiles = gist.Files
+	c.gist.Files = gist.Files
 	return nil
 }
