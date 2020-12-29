@@ -33,7 +33,8 @@ func TestLoadGistFiles(t *testing.T) {
 	_ = conn.loadGistFiles()
 
 	//check when a correct list is returned
-	files := map[github.GistFilename]github.GistFile{github.GistFilename("name"): github.GistFile{}}
+	content := "This is the file's contents"
+	files := map[github.GistFilename]github.GistFile{github.GistFilename("name"): github.GistFile{Content: &content}}
 	mock.EXPECT().Get(ctx, gistID).Return(&github.Gist{Files: files}, nil, nil).Times(1)
 	gistList := []*github.Gist{&github.Gist{ID: &gistID}}
 	mock.EXPECT().List(ctx, "", nil).Return(gistList, nil, nil).Times(1)
