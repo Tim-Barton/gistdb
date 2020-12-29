@@ -19,3 +19,12 @@ func isFilenameInGistFileList(searchID string, g map[github.GistFilename]github.
 	}
 	return false
 }
+
+func deepCopyGist(gist github.Gist) github.Gist {
+	newGist := gist
+	newGist.Files = make(map[github.GistFilename]github.GistFile)
+	for k, v := range gist.Files {
+		newGist.Files[k] = v
+	}
+	return newGist
+}
