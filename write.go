@@ -12,7 +12,7 @@ func (c *Connection) Insert(filename string, contents string) error {
 		return fmt.Errorf("Attempting to insert file %s which already exists in the Gist", filename)
 	}
 	c.gist.Files[github.GistFilename(filename)] = github.GistFile{Content: github.String(contents)}
-	c.client.Gists.Edit(c.ctx, c.gistID, &c.gist)
+	c.client.Edit(c.ctx, c.gistID, &c.gist)
 
 	return nil
 }
@@ -23,7 +23,7 @@ func (c *Connection) UpdateOne(filename string, contents string) error {
 		return fmt.Errorf("Attempting to update file %s which does not exist ing the Gist", filename)
 	}
 	c.gist.Files[github.GistFilename(filename)] = github.GistFile{Content: github.String(contents)}
-	c.client.Gists.Edit(c.ctx, c.gistID, &c.gist)
+	c.client.Edit(c.ctx, c.gistID, &c.gist)
 	return nil
 }
 

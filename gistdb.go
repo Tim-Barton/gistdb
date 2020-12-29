@@ -10,7 +10,7 @@ import (
 //Connection is the handle for all access to the Gists
 type Connection struct {
 	ctx    context.Context
-	client *github.Client
+	client GithubGists
 	gistID string
 	gist   github.Gist
 }
@@ -26,7 +26,7 @@ func NewConnection(pat string, gistid string) (*Connection, error) {
 	client := github.NewClient(tc)
 
 	conn := Connection{ctx: ctx,
-		client: client,
+		client: client.Gists,
 		gistID: gistid}
 
 	err := conn.loadGistFiles()
